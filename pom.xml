@@ -41,8 +41,8 @@
     <solr.version>8.4.1</solr.version>
     <hadoop.version>2.7.5</hadoop.version>
     <fasterxml.version>2.10.1</fasterxml.version>
-    <scala.version>2.11.12</scala.version>
-    <scala.binary.version>2.11</scala.binary.version>
+    <scala.version>2.12.10</scala.version>
+    <scala.binary.version>2.12</scala.binary.version>
     <scoverage.plugin.version>1.1.1</scoverage.plugin.version>
     <MaxPermSize>128m</MaxPermSize>
   </properties>
@@ -54,7 +54,7 @@
         <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
-  </pluginRepositories> 
+  </pluginRepositories>
   <repositories>
     <repository>
       <id>Central Maven repository</id>
@@ -98,7 +98,7 @@
                 <phase>verify</phase>
                 <goals>
                   <goal>sign</goal>
-	        </goals>
+                </goals>
                 <configuration>
                   <gpgArguments>
                     <arg>--pinentry-mode</arg>
@@ -124,8 +124,8 @@
             <version>0.7.5.201505241946</version>
             <configuration>
               <excludes>
-              <exclude>com/lucidworks/spark/example/**</exclude>
-              <exclude>**/*Test*</exclude>
+                <exclude>com/lucidworks/spark/example/**</exclude>
+                <exclude>**/*Test*</exclude>
               </excludes>
             </configuration>
             <executions>
@@ -169,7 +169,7 @@
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.4.4</version>
         <executions>
           <execution>
             <id>eclipse-add-source</id>
@@ -284,9 +284,7 @@
               </filters>
               <artifactSet>
                 <excludes>
-                  <exclude>org.apache.spark:spark-core_${scala.binary.version}</exclude>
-                  <exclude>org.apache.spark:spark-streaming_${scala.binary.version}</exclude>
-                  <exclude>org.apache.spark:spark-hive_${scala.binary.version}</exclude>
+                  <exclude>org.apache.spark:*</exclude>
                   <exclude>org.apache.derby:*</exclude>
                   <exclude>org.apache.hadoop:*</exclude>
                   <exclude>com.google.protobuf_spark:*</exclude>
@@ -302,12 +300,14 @@
                   <exclude>commons-httpclient:commons-httpclient</exclude>
                   <exclude>org.apache.curator:*</exclude>
                   <exclude>org.apache.commons:commons-lang3</exclude>
+                  <exclude>org.apache.logging.log4j:*</exclude>
+                  <exclude>org.apache.logging.slf4j:*</exclude>
                   <exclude>com.google.code.findbugs</exclude>
                   <exclude>com.ning:compress-lzf</exclude>
                   <exclude>org.xerial.snappy:snappy-java</exclude>
                   <exclude>net.jpountz.lz4:lz4</exclude>
                   <exclude>com.esotericsoftware:*</exclude>
-                  <exclude>log4j:log4j</exclude>
+                  <exclude>log4j:*</exclude>
                   <exclude>com.esotericsoftware.reflectasm:reflectasm</exclude>
                   <exclude>com.esotericsoftware.minlog:minlog</exclude>
                   <exclude>org.objenesis:objenesis</exclude>
@@ -325,9 +325,14 @@
                   <exclude>org.mortbay.jetty:jetty-util</exclude>
                   <exclude>org.spire-math</exclude>
                   <exclude>com.chuusai:shapeless_2.11</exclude>
+                  <exclude>org.apache.hadoop.*:*</exclude>
                 </excludes>
               </artifactSet>
               <relocations>
+                <relocation>
+                  <pattern>org.apache.zookeeper</pattern>
+                  <shadedPattern>shaded.apache.zookeeper</shadedPattern>
+                </relocation>
                 <relocation>
                   <pattern>org.apache.http</pattern>
                   <shadedPattern>shaded.apache.http</shadedPattern>
@@ -362,17 +367,17 @@
                 </relocation>
                 <!-- Commented out because the maven-shade-plugin does not work for Scala classes due to ScalaSig-->
                 <!--<relocation>-->
-                  <!--<pattern>org.apache.solr</pattern>-->
-                  <!--<shadedPattern>shaded.apache.solr</shadedPattern>-->
+                <!--<pattern>org.apache.solr</pattern>-->
+                <!--<shadedPattern>shaded.apache.solr</shadedPattern>-->
                 <!--</relocation>-->
                 <relocation>
                   <pattern>org.apache.commons.cli</pattern>
                   <shadedPattern>shaded.apache.commons.cli</shadedPattern>
                 </relocation>
-                <relocation>
-                  <pattern>org.apache.http</pattern>
-                  <shadedPattern>shaded.apache.http</shadedPattern>
-		</relocation>
+                <!--                <relocation>-->
+                <!--                  <pattern>org.apache.http</pattern>-->
+                <!--                  <shadedPattern>shaded.apache.http</shadedPattern>-->
+                <!--		            </relocation>-->
               </relocations>
             </configuration>
           </execution>
@@ -459,11 +464,12 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-mllib_${scala.binary.version}</artifactId>
       <version>${spark.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.bahir</groupId>
-        <artifactId>spark-streaming-twitter_${scala.binary.version}</artifactId>
-        <version>2.0.1</version>
+      <groupId>org.apache.bahir</groupId>
+      <artifactId>spark-streaming-twitter_${scala.binary.version}</artifactId>
+      <version>2.4.0</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -646,6 +652,7 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-hive_${scala.binary.version}</artifactId>
       <version>${spark.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

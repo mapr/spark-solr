@@ -56,6 +56,7 @@ class SelectSolrRDD(
         val resultsIterator = new StreamingResultsIterator(SolrSupport.getCachedHttpSolrClient(url, zkHost), partition.query, partition.cursorMark)
         context.addTaskCompletionListener { (context) =>
           logger.info(f"Fetched ${resultsIterator.getNumDocs} rows from shard $url for partition ${split.index}")
+          null
         }
         resultsIterator
       }
@@ -71,6 +72,7 @@ class SelectSolrRDD(
         resultsIterator.setMaxSampleDocs(p.maxRows)
         context.addTaskCompletionListener { (context) =>
           logger.info(f"Fetched ${resultsIterator.getNumDocs} rows from the limit (${p.maxRows}) partition of ${p.collection}")
+          null
         }
         resultsIterator
       }

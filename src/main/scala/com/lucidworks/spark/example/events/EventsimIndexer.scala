@@ -7,13 +7,13 @@ import com.lucidworks.spark.SparkApp.RDDProcessor
 import com.lucidworks.spark.fusion.FusionPipelineClient
 import org.apache.commons.cli.{CommandLine, Option}
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 
 import scala.collection.JavaConversions.bufferAsJavaList
 import scala.collection.mutable.ListBuffer
 
 class EventsimIndexer extends RDDProcessor {
-  val DEFAULT_ENDPOINT = 
+  val DEFAULT_ENDPOINT =
     "http://localhost:8764/api/apollo/index-pipelines/eventsim-default/collections/eventsim/index"
 
   def getName: String = "eventsim"
@@ -70,7 +70,7 @@ class EventsimIndexer extends RDDProcessor {
 
     val sparkSession: SparkSession = SparkSession.builder().config(conf).getOrCreate()
 
-    sparkSession.read.json(cli.getOptionValue("eventsimJson")).foreachPartition(rows => {
+    sparkSession.read.json(cli.getOptionValue("eventsimJson")).foreachPartition((rows:Iterator[Row]) => {
       val fusion: FusionPipelineClient =
         if (fusionAuthEnabled) new FusionPipelineClient(fusionEndpoints, fusionUser, fusionPass, fusionRealm)
         else new FusionPipelineClient(fusionEndpoints)
